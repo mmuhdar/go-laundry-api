@@ -2,6 +2,8 @@ import {
   Injectable,
   NestMiddleware,
   UnauthorizedException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -13,9 +15,11 @@ export class LoggerMiddleware implements NestMiddleware {
 
   async use(req, res: Response, next: NextFunction) {
     const bearer = req.header('authorization');
+    if (!bearer)
+      throw new HttpException('Login First', HttpStatus.UNAUTHORIZED);
     const token = bearer.split(' ')[1];
     try {
-      const { id } = verifyToken(token);
+      const { id } = await verifyToken(token);
       const user = await this.prisma.user.findUnique({
         where: { id },
       });
