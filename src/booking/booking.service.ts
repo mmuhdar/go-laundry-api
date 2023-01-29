@@ -88,7 +88,6 @@ export class BookingService {
           bookingCode,
           totalPrice: Number(totalPrice),
           status: BookingStatus.PROGRESS,
-          userId: createBooking.userId,
         },
       });
       return {
