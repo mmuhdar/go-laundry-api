@@ -9,15 +9,26 @@ import { BookingModule } from './booking/booking.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MenuModule } from './menu/menu.module';
 import { LoggerMiddleware } from 'middlewares/logger.middleware';
+import { BookingController } from './booking/booking.controller';
+import { MenuController } from './menu/menu.controller';
 
 @Module({
   imports: [UserModule, BookingModule, PrismaModule, MenuModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes({
-      path: 'booking',
-      method: RequestMethod.GET,
-    });
+    consumer
+      .apply(LoggerMiddleware)
+      .exclude(
+        {
+          path: 'booking/booking-code',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'menu',
+          method: RequestMethod.GET,
+        },
+      )
+      .forRoutes(BookingController, MenuController);
   }
 }

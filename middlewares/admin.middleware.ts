@@ -4,13 +4,14 @@ import {
   UnauthorizedException,
   HttpException,
   HttpStatus,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { verifyToken } from 'utils/jwt';
 
 @Injectable()
-export class LoggerMiddleware implements NestMiddleware {
+export class AdminMiddleware implements NestMiddleware {
   constructor(private prisma: PrismaService) {}
 
   async use(req, res: Response, next: NextFunction) {
@@ -23,17 +24,9 @@ export class LoggerMiddleware implements NestMiddleware {
       const user = await this.prisma.user.findUnique({
         where: { id },
       });
-
-      if (!user) {
-        throw new UnauthorizedException('Token Invalid, Please login first');
+      if (user.role !== 'ADMIN') {
+        throw new ForbiddenException('You are not allowance to do this action');
       } else {
-        const userPayload = {
-          id: user.id,
-          role: user.role,
-          email: user.email,
-          username: user.username,
-        };
-        req.user = userPayload;
         next();
       }
     } catch (error) {
