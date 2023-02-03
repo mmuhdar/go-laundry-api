@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { verifyToken } from 'utils/jwt';
+import { verifyToken } from 'utils';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
