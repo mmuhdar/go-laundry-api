@@ -8,11 +8,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { query } from 'express';
 import { User } from 'shared/decorator';
+import { TokenPayloadInterface } from 'shared/interface';
 import { BookingService } from './booking.service';
-import { QueryCode, QueryDto } from './dto';
+import { BookingDto, QueryCode, QueryDto } from './dto';
+import { UpdateStatusDto } from './dto';
 
 @Controller('booking')
 export class BookingController {
@@ -34,17 +34,17 @@ export class BookingController {
   }
 
   @Post()
-  createBooking(@Body() createBooking: Prisma.BookingCreateInput) {
+  createBooking(@Body() createBooking: BookingDto) {
     return this.bookingService.createBooking(createBooking);
   }
 
   @Patch(':id')
   updateStatus(
-    @Body('status') status: string,
+    @Body() dto: UpdateStatusDto,
     @Param('id') id: string,
-    @User() user: any,
+    @User() user: TokenPayloadInterface,
   ) {
-    return this.bookingService.updateStatus({ status, id, user });
+    return this.bookingService.updateStatus({ dto, id, user });
   }
 
   @Delete(':id')
