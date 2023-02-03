@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { BookingStatus } from 'shared/enum/booking-status.enum';
+import { BookingStatus } from '../enum';
 
 export class QueryDto {
   @IsOptional()

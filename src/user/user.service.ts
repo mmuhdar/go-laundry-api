@@ -4,9 +4,9 @@ import { RoleUser } from './enum/role-user.enum';
 import { Status } from 'shared/enum/status.enum';
 import { LoginInterface, RegisterInterface } from './interface';
 import { checkPassword, hashPassword } from 'utils/bcrypt';
-import { TokenInterface } from 'shared/interface/token.interface';
 import { createToken, errorHandler, excludeField } from 'utils';
 import { UserDto } from './dto';
+import { TokenPayloadInterface } from 'shared/interface';
 
 @Injectable()
 export class UserService {
@@ -53,7 +53,7 @@ export class UserService {
 
       if (!isMatch) throw new UnauthorizedException('Email/Password is wrong!');
 
-      const tokenPayload: TokenInterface = {
+      const tokenPayload: TokenPayloadInterface = {
         id: found.id,
         email: found.email,
         username: found.username,

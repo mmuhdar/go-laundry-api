@@ -3,17 +3,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { BookingStatus } from 'shared/enum/booking-status.enum';
+
+import { BookingStatus } from './enum';
 import { Status } from 'shared/enum/status.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { generateBookingCode } from 'utils/bookingCode';
+import { generateBookingCode } from 'utils';
 import { errorHandler, excludeField } from 'utils';
 import {
   GetBookingInterface,
   GetBookingsInterface,
   PostBookingInterface,
-} from './interface/booking.interface';
-import { QueryCode, QueryDto } from './dto';
+  UpdateStatusInterface,
+} from './interface';
+import { BookingDto, QueryCode, QueryDto } from './dto';
 
 @Injectable()
 export class BookingService {
@@ -93,13 +95,14 @@ export class BookingService {
     }
   }
 
-  async createBooking(createBooking: any): Promise<PostBookingInterface> {
+  async createBooking(
+    createBooking: BookingDto,
+  ): Promise<PostBookingInterface> {
     try {
       const { name, address, totalPrice } = createBooking;
       const bookingCode = generateBookingCode();
       const data = await this.prisma.booking.create({
         data: {
-          ...createBooking,
           name,
           address,
           bookingCode,
@@ -137,13 +140,18 @@ export class BookingService {
     }
   }
 
-  async updateStatus({ status, id, user }): Promise<GetBookingInterface> {
+  async updateStatus({
+    dto,
+    id,
+    user,
+  }: UpdateStatusInterface): Promise<GetBookingInterface> {
     try {
       await this.checkBookingId(id);
-      if (!status) throw new BadRequestException('Please input status field');
+      if (!dto.status)
+        throw new BadRequestException('Please input status field');
       const data = await this.prisma.booking.update({
-        data: { status, userId: user.id },
         where: { id },
+        data: { status: dto.status, userId: user.id },
       });
       return {
         status: Status.SUCCESS,
