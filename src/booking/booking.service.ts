@@ -7,13 +7,13 @@ import { BookingStatus } from 'shared/enum/booking-status.enum';
 import { Status } from 'shared/enum/status.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateBookingCode } from 'utils/bookingCode';
-import { errorHandler } from 'utils/errorHandler';
-import { excludeUser } from 'utils/excludeField';
+import { errorHandler, excludeField } from 'utils';
 import {
   GetBookingInterface,
   GetBookingsInterface,
   PostBookingInterface,
 } from './interface/booking.interface';
+import { QueryDto } from './dto';
 
 @Injectable()
 export class BookingService {
@@ -21,31 +21,48 @@ export class BookingService {
 
   async checkBookingId(id: string): Promise<any> {
     try {
-      const data = await this.prisma.booking.findUnique({ where: { id } });
+      const data = await this.prisma.booking.findUnique({
+        where: { id },
+        include: {
+          updatedBy: true,
+        },
+      });
       if (!data) throw new NotFoundException(`No data found with id ${id}`);
       return data;
     } catch (error) {
-      throw error;
+      errorHandler(error);
     }
   }
 
-  async findAll(): Promise<GetBookingsInterface> {
+  async findAll(query: QueryDto): Promise<GetBookingsInterface> {
     try {
-      const data = await this.prisma.booking.findMany({
-        include: {
-          finishedBy: true,
-          menu: true,
-        },
-      });
+      const { status, name, bookingCode } = query;
+      let data;
+
+      if (!name && !status && !bookingCode) {
+        data = await this.prisma.booking.findMany({
+          include: {
+            menu: true,
+            updatedBy: true,
+          },
+        });
+      } else {
+        data = await this.prisma.booking.findMany({
+          where: { name, status, bookingCode },
+          include: {
+            menu: true,
+            updatedBy: true,
+          },
+        });
+      }
+
       data.forEach((el) => {
-        if (el.userId) {
-          excludeUser(el.finishedBy, [
-            'password',
-            'createdAt',
-            'updateAt',
-            'email',
-          ]);
-        }
+        excludeField(el.updatedBy, [
+          'password',
+          'createdAt',
+          'updateAt',
+          'email',
+        ]);
       });
       return {
         status: Status.SUCCESS,
@@ -60,7 +77,7 @@ export class BookingService {
   async findById(id: string): Promise<GetBookingInterface> {
     try {
       const data = await this.checkBookingId(id);
-      excludeUser(data.finishedBy, [
+      excludeField(data.updatedBy, [
         'password',
         'createdAt',
         'updateAt',
@@ -68,7 +85,7 @@ export class BookingService {
       ]);
       return {
         status: Status.SUCCESS,
-        message: `Succes get data with ID ${id}`,
+        message: `Succes get data`,
         content: data,
       };
     } catch (error) {
@@ -106,17 +123,8 @@ export class BookingService {
         where: { bookingCode },
         include: {
           menu: true,
-          finishedBy: true,
         },
       });
-      if (data.userId) {
-        excludeUser(data.finishedBy, [
-          'password',
-          'createdAt',
-          'updateAt',
-          'email',
-        ]);
-      }
       return {
         status: Status.SUCCESS,
         message: `Success get data with booking code ${bookingCode}`,
@@ -127,12 +135,12 @@ export class BookingService {
     }
   }
 
-  async updateStatus(status: string, id: string): Promise<GetBookingInterface> {
+  async updateStatus({ status, id, user }): Promise<GetBookingInterface> {
     try {
       await this.checkBookingId(id);
       if (!status) throw new BadRequestException('Please input status field');
       const data = await this.prisma.booking.update({
-        data: { status },
+        data: { status, userId: user.id },
         where: { id },
       });
       return {

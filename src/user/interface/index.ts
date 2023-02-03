@@ -1,4 +1,2 @@
-import { RegisterInterface } from './register.interface';
-import { LoginInterface } from './login.interface';
-
-export { RegisterInterface, LoginInterface };
+export * from './register.interface';
+export * from './login.interface';

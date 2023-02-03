@@ -1,9 +1,10 @@
-export function excludeUser<User, Key extends keyof User>(
-  user: User,
+export function excludeField<Field, Key extends keyof Field>(
+  field: Field,
   keys: Key[],
-): Omit<User, Key> {
+): Omit<Field, Key> {
+  if (!field) return null;
   for (const key of keys) {
-    delete user[key];
+    delete field[key];
   }
-  return user;
+  return field;
 }
