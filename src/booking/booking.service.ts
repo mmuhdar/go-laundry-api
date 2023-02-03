@@ -10,9 +10,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { generateBookingCode } from 'utils';
 import { errorHandler, excludeField } from 'utils';
 import {
-  GetBookingInterface,
-  GetBookingsInterface,
-  PostBookingInterface,
+  ResponseCommonBooking,
+  ResponseCreateBooking,
+  ResponseFindBookings,
   UpdateStatusInterface,
 } from './interface';
 import { BookingDto, QueryCode, QueryDto } from './dto';
@@ -36,7 +36,7 @@ export class BookingService {
     }
   }
 
-  async findAll(query: QueryDto): Promise<GetBookingsInterface> {
+  async findAll(query: QueryDto): Promise<ResponseFindBookings> {
     try {
       const { status, name, bookingCode } = query;
       let data;
@@ -76,7 +76,7 @@ export class BookingService {
     }
   }
 
-  async findById(id: string): Promise<GetBookingInterface> {
+  async findById(id: string): Promise<ResponseCommonBooking> {
     try {
       const data = await this.checkBookingId(id);
       excludeField(data.updatedBy, [
@@ -97,7 +97,7 @@ export class BookingService {
 
   async createBooking(
     createBooking: BookingDto,
-  ): Promise<PostBookingInterface> {
+  ): Promise<ResponseCreateBooking> {
     try {
       const { name, address, totalPrice } = createBooking;
       const bookingCode = generateBookingCode();
@@ -144,7 +144,7 @@ export class BookingService {
     dto,
     id,
     user,
-  }: UpdateStatusInterface): Promise<GetBookingInterface> {
+  }: UpdateStatusInterface): Promise<ResponseCommonBooking> {
     try {
       await this.checkBookingId(id);
       if (!dto.status)
@@ -163,7 +163,7 @@ export class BookingService {
     }
   }
 
-  async deleteBooking(id: string): Promise<GetBookingInterface> {
+  async deleteBooking(id: string): Promise<ResponseCommonBooking> {
     try {
       await this.checkBookingId(id);
       const data = await this.prisma.booking.delete({ where: { id } });
