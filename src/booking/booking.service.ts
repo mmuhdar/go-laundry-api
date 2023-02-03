@@ -13,7 +13,7 @@ import {
   GetBookingsInterface,
   PostBookingInterface,
 } from './interface/booking.interface';
-import { QueryDto } from './dto';
+import { QueryCode, QueryDto } from './dto';
 
 @Injectable()
 export class BookingService {
@@ -117,17 +117,19 @@ export class BookingService {
     }
   }
 
-  async findBookingCode(bookingCode: any): Promise<any> {
+  async findBookingCode(query: QueryCode): Promise<any> {
     try {
       const data = await this.prisma.booking.findUnique({
-        where: { bookingCode },
+        where: { bookingCode: query.code },
         include: {
           menu: true,
         },
       });
+      if (!data)
+        throw new NotFoundException(`No data with booking code ${query.code}`);
       return {
         status: Status.SUCCESS,
-        message: `Success get data with booking code ${bookingCode}`,
+        message: `Success get data with booking code ${query.code}`,
         content: data,
       };
     } catch (error) {

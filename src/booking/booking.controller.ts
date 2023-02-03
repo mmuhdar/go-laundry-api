@@ -9,9 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { query } from 'express';
 import { User } from 'shared/decorator';
 import { BookingService } from './booking.service';
-import { QueryDto } from './dto';
+import { QueryCode, QueryDto } from './dto';
 
 @Controller('booking')
 export class BookingController {
@@ -23,8 +24,8 @@ export class BookingController {
   }
 
   @Get('booking-code')
-  getBookingByCode(@Query('code') code: string) {
-    return this.bookingService.findBookingCode(code);
+  getBookingByCode(@Query() query: QueryCode) {
+    return this.bookingService.findBookingCode(query);
   }
 
   @Get(':id')
