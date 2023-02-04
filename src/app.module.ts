@@ -11,9 +11,16 @@ import { MenuModule } from './menu/menu.module';
 import { LoggerMiddleware } from 'middlewares/logger.middleware';
 import { BookingController } from './booking/booking.controller';
 import { MenuController } from './menu/menu.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, BookingModule, PrismaModule, MenuModule],
+  imports: [
+    UserModule,
+    BookingModule,
+    PrismaModule,
+    MenuModule,
+    ConfigModule.forRoot(),
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
