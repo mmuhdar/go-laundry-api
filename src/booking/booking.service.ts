@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
 
 import { BookingStatus } from './enum';
 import { Status } from 'shared/enum/status.enum';
@@ -99,20 +100,46 @@ export class BookingService {
     createBooking: BookingDto,
   ): Promise<ResponseCreateBooking> {
     try {
-      const { name, address, totalPrice } = createBooking;
+      const { name, address, totalPrice, email, menuId } = createBooking;
+
       const bookingCode = generateBookingCode();
+
       const data = await this.prisma.booking.create({
         data: {
           name,
           address,
+          email,
           bookingCode,
           totalPrice: Number(totalPrice),
           status: BookingStatus.PROGRESS,
+          menuId,
         },
       });
+
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.SENDER_MAIL,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      await transporter.sendMail({
+        from: `"Go Laundry" <${process.env.SENDER_MAIL}>`,
+        to: email,
+        subject: 'Booking Code',
+        text: 'Booking Code',
+        html: `
+        <h4>Hi, ${name}</h4>
+        <h4>This is your booking code <i style="color:blue;"><u>${bookingCode}</u></i></h4>
+        `,
+      });
+
       return {
         status: Status.SUCCESS,
-        message: `Succuss create booking`,
+        message: `Succuss create booking. Check your email for get booking code.`,
         content: { bookingCode: data.bookingCode },
       };
     } catch (error) {

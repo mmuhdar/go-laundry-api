@@ -35,6 +35,7 @@ model Booking {
   id String @id @default(uuid())
   name String
   address String
+  email String
   totalPrice Int
   bookingCode String @unique
   status String
