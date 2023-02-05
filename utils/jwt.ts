@@ -3,9 +3,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { TokenInterface } from 'shared/interface/token.interface';
+import { TokenPayloadInterface } from 'shared/interface';
 
-export const createToken = async (payload: TokenInterface): Promise<string> => {
+export const createToken = async (
+  payload: TokenPayloadInterface,
+): Promise<string> => {
   try {
     const token = await jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '3h',

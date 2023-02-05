@@ -1,4 +1,4 @@
-export interface TokenInterface {
+export interface TokenPayloadInterface {
   id: string;
   username: string;
   email: string;

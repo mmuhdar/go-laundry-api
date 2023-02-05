@@ -8,21 +8,24 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { User } from 'shared/decorator';
+import { TokenPayloadInterface } from 'shared/interface';
 import { BookingService } from './booking.service';
+import { BookingDto, QueryCode, QueryDto } from './dto';
+import { UpdateStatusDto } from './dto';
 
 @Controller('booking')
 export class BookingController {
   constructor(private bookingService: BookingService) {}
 
   @Get()
-  findAll() {
-    return this.bookingService.findAll();
+  findAll(@Query() dto: QueryDto) {
+    return this.bookingService.findAll(dto);
   }
 
   @Get('booking-code')
-  getBookingByCode(@Query('code') code: string) {
-    return this.bookingService.findBookingCode(code);
+  getBookingByCode(@Query() query: QueryCode) {
+    return this.bookingService.findBookingCode(query);
   }
 
   @Get(':id')
@@ -31,13 +34,17 @@ export class BookingController {
   }
 
   @Post()
-  createBooking(@Body() createBooking: Prisma.BookingCreateInput) {
+  createBooking(@Body() createBooking: BookingDto) {
     return this.bookingService.createBooking(createBooking);
   }
 
   @Patch(':id')
-  updateStatus(@Body('status') statusBooking: string, @Param('id') id: string) {
-    return this.bookingService.updateStatus(statusBooking, id);
+  updateStatus(
+    @Body() dto: UpdateStatusDto,
+    @Param('id') id: string,
+    @User() user: TokenPayloadInterface,
+  ) {
+    return this.bookingService.updateStatus({ dto, id, user });
   }
 
   @Delete(':id')

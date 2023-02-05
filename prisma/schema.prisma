@@ -35,6 +35,7 @@ model Booking {
   id String @id @default(uuid())
   name String
   address String
+  email String
   totalPrice Int
   bookingCode String @unique
   status String
@@ -43,5 +44,5 @@ model Booking {
   menuId String?
   userId String?
   menu Menu? @relation(fields: [menuId], references: [id])
-  finishedBy User? @relation(fields: [userId], references: [id])
+  updatedBy User? @relation(fields: [userId], references: [id])
 }

@@ -1,7 +1,6 @@
 import {
   Injectable,
   NestMiddleware,
-  UnauthorizedException,
   HttpException,
   HttpStatus,
   ForbiddenException,

@@ -1,59 +1,36 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
 import { RoleUser } from './enum/role-user.enum';
 import { Status } from 'shared/enum/status.enum';
 import { LoginInterface, RegisterInterface } from './interface';
 import { checkPassword, hashPassword } from 'utils/bcrypt';
-import { TokenInterface } from 'shared/interface/token.interface';
-import { createToken } from 'utils/jwt';
-import { errorHandler } from 'utils/errorHandler';
-import { isEmail } from 'utils/emailChecker';
-import { excludeUser } from 'utils/excludeField';
+import { createToken, errorHandler, excludeField } from 'utils';
+import { UserDto } from './dto';
+import { TokenPayloadInterface } from 'shared/interface';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  // async validator(form): Promise<Prisma.UserCreateInput> {
-  //   const { username, email, password } = form;
-  //   const hashedPassword = await hashPassword(password);
-  //   return Prisma.validator<Prisma.UserCreateInput>()({
-  //     username,
-  //     email,
-  //     password: hashedPassword,
-  //     role: RoleUser.MEMBER,
-  //   });
-  // }
-
-  async register(
-    registerUser: Prisma.UserCreateInput,
-  ): Promise<RegisterInterface> {
+  async register(registerUser: UserDto): Promise<RegisterInterface> {
     try {
       const { username, email, password } = registerUser;
 
-      if (!username || !email || !password)
-        throw new BadRequestException('Please fill all field');
-      if (!isEmail(email))
-        throw new BadRequestException('Please input valid email');
-
+      // hash password before insert to db
       const hashedPassword = await hashPassword(password);
 
       const data = await this.prisma.user.create({
         data: {
-          ...registerUser,
           username: username,
           email: email,
           password: hashedPassword,
           role: RoleUser.MEMBER,
         },
-        // data: this.validator(registerUser),
       });
-      excludeUser(data, ['password', 'createdAt', 'updateAt']);
+
+      // erase field of the api response
+      excludeField(data, ['password', 'createdAt', 'updateAt']);
+
       return {
         status: Status.SUCCESS,
         message: `Success create user`,
@@ -64,7 +41,7 @@ export class UserService {
     }
   }
 
-  async login(loginuser: Prisma.UserCreateInput): Promise<LoginInterface> {
+  async login(loginuser: UserDto): Promise<LoginInterface> {
     try {
       const { username, password } = loginuser;
 
@@ -76,7 +53,7 @@ export class UserService {
 
       if (!isMatch) throw new UnauthorizedException('Email/Password is wrong!');
 
-      const tokenPayload: TokenInterface = {
+      const tokenPayload: TokenPayloadInterface = {
         id: found.id,
         email: found.email,
         username: found.username,

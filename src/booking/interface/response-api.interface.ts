@@ -1,19 +1,19 @@
 import { Status } from 'shared/enum/status.enum';
 import { Booking } from '@prisma/client';
 
-export interface GetBookingsInterface {
+export interface ResponseFindBookings {
   status: Status;
   message: string;
   content: Booking[];
 }
 
-export interface GetBookingInterface {
+export interface ResponseCommonBooking {
   status: Status;
   message: string;
   content: Booking;
 }
 
-export interface PostBookingInterface {
+export interface ResponseCreateBooking {
   status: Status;
   message: string;
   content: {
