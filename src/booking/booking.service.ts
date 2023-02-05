@@ -6,10 +6,10 @@ import {
 import * as nodemailer from 'nodemailer';
 
 import { BookingStatus } from './enum';
-import { Status } from 'shared/enum/status.enum';
+import { Status } from '../shared/enum/status.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { generateBookingCode } from 'utils';
-import { errorHandler, excludeField } from 'utils';
+import { generateBookingCode } from '../utils';
+import { errorHandler, excludeField } from '../utils';
 import {
   ResponseCommonBooking,
   ResponseCreateBooking,

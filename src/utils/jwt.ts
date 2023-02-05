@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { TokenPayloadInterface } from 'shared/interface';
+import { TokenPayloadInterface } from '../shared/interface';
 
 export const createToken = async (
   payload: TokenPayloadInterface,

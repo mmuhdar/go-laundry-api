@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Status } from 'shared/enum';
+import { Status } from '../shared/enum';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { errorHandler } from 'utils';
+import { errorHandler } from '../utils';
 import { MenuDto, UpdateMenuDto } from './dto/menu.dto';
 import { ResponseCommonMenu, ResponseFindMenus } from './interface';
 

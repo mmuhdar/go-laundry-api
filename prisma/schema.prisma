@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   email String @unique
   username String @unique
   password String
@@ -22,7 +22,7 @@ model User {
 }
 
 model Menu {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   price Int
   estimateDay String
@@ -32,7 +32,7 @@ model Menu {
 }
 
 model Booking {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   address String
   email String
@@ -41,8 +41,8 @@ model Booking {
   status String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  menuId String?
-  userId String?
+  menuId String? @db.ObjectId @unique
+  userId String? @db.ObjectId @unique
   menu Menu? @relation(fields: [menuId], references: [id])
   updatedBy User? @relation(fields: [userId], references: [id])
 }
