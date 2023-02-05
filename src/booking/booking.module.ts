@@ -7,7 +7,7 @@ import {
 import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { AdminMiddleware } from 'middlewares/admin.middleware';
+import { AdminMiddleware } from '../middlewares/admin.middleware';
 
 @Module({
   imports: [PrismaModule],

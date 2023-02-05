@@ -1,4 +1,4 @@
-import { Status } from 'shared/enum/status.enum';
+import { Status } from '../../shared/enum/status.enum';
 import { Booking } from '@prisma/client';
 
 export interface ResponseFindBookings {

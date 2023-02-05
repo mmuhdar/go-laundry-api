@@ -1,5 +1,5 @@
 import { Menu } from '@prisma/client';
-import { Status } from 'shared/enum';
+import { Status } from '../../shared/enum';
 
 export interface ResponseFindMenus {
   status: Status;

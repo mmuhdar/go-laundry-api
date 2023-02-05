@@ -1,4 +1,4 @@
-import { Status } from 'shared/enum/status.enum';
+import { Status } from '../../shared/enum/status.enum';
 
 export interface RegisterInterface {
   status: Status;

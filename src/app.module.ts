@@ -8,7 +8,7 @@ import { UserModule } from './user/user.module';
 import { BookingModule } from './booking/booking.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MenuModule } from './menu/menu.module';
-import { LoggerMiddleware } from 'middlewares/logger.middleware';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { BookingController } from './booking/booking.controller';
 import { MenuController } from './menu/menu.controller';
 import { ConfigModule } from '@nestjs/config';

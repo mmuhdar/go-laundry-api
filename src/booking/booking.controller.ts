@@ -8,8 +8,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { User } from 'shared/decorator';
-import { TokenPayloadInterface } from 'shared/interface';
+import { User } from '../shared/decorator';
+import { TokenPayloadInterface } from '../shared/interface';
 import { BookingService } from './booking.service';
 import { BookingDto, QueryCode, QueryDto } from './dto';
 import { UpdateStatusDto } from './dto';

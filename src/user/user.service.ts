@@ -1,12 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RoleUser } from './enum/role-user.enum';
-import { Status } from 'shared/enum/status.enum';
+import { Status } from '../shared/enum/status.enum';
 import { LoginInterface, RegisterInterface } from './interface';
-import { checkPassword, hashPassword } from 'utils/bcrypt';
-import { createToken, errorHandler, excludeField } from 'utils';
+import {
+  createToken,
+  errorHandler,
+  excludeField,
+  checkPassword,
+  hashPassword,
+} from '../utils';
 import { UserDto } from './dto';
-import { TokenPayloadInterface } from 'shared/interface';
+import { TokenPayloadInterface } from '../shared/interface';
 
 @Injectable()
 export class UserService {
