@@ -8,7 +8,8 @@ export const errorHandler = (err: any): void => {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
       case 'P2002':
-        throw new ConflictException(`${err.meta.target[0]} already used`);
+        const key = err.meta?.target;
+        throw new ConflictException(`${key} already used`);
       default:
         throw new InternalServerErrorException();
     }
