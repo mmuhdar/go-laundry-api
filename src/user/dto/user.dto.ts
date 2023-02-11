@@ -15,7 +15,7 @@ export class RegisterUser {
 }
 
 // refactor UserDto
-export class UserDto {
+export class RegisterDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -28,7 +28,21 @@ export class UserDto {
   @IsEnum(RoleUser)
   role?: RoleUser;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   username: string;
+
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+}
+
+export class LoginDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 }

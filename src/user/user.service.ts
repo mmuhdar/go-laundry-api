@@ -10,16 +10,16 @@ import {
   checkPassword,
   hashPassword,
 } from '../utils';
-import { UserDto } from './dto';
+import { RegisterDto, LoginDto } from './dto';
 import { TokenPayloadInterface } from '../shared/interface';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async register(registerUser: UserDto): Promise<RegisterInterface> {
+  async register(registerUser: RegisterDto): Promise<RegisterInterface> {
     try {
-      const { username, email, password } = registerUser;
+      const { username, email, password, name } = registerUser;
 
       // hash password before insert to db
       const hashedPassword = await hashPassword(password);
@@ -27,6 +27,7 @@ export class UserService {
       const data = await this.prisma.user.create({
         data: {
           username,
+          name,
           email,
           password: hashedPassword,
           role: RoleUser.MEMBER,
@@ -46,11 +47,11 @@ export class UserService {
     }
   }
 
-  async login(loginuser: UserDto): Promise<LoginInterface> {
+  async login(loginuser: LoginDto): Promise<LoginInterface> {
     try {
-      const { username, password } = loginuser;
+      const { email, password } = loginuser;
 
-      const found = await this.prisma.user.findUnique({ where: { username } });
+      const found = await this.prisma.user.findUnique({ where: { email } });
 
       if (!found) throw new UnauthorizedException('Email/Password is wrong!');
 
@@ -72,6 +73,8 @@ export class UserService {
         message: 'Login Success',
         content: {
           token,
+          name: found.name,
+          email: found.email,
         },
       };
     } catch (error) {

@@ -5,5 +5,7 @@ export interface LoginInterface {
   message: string;
   content: {
     token: string;
+    name: string;
+    email: string;
   };
 }
