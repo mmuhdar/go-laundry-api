@@ -14,6 +14,9 @@ export class LoggerMiddleware implements NestMiddleware {
   constructor(private prisma: PrismaService) {}
 
   async use(req, res: Response, next: NextFunction) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', '*');
+    res.header('Access-Control-Allow-Methods', '*');
     const bearer = req.header('authorization');
     if (!bearer)
       throw new HttpException('Login First', HttpStatus.UNAUTHORIZED);
