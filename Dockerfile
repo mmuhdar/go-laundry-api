@@ -10,6 +10,14 @@ WORKDIR /app
 # Copy the rest of the application code to the container
 COPY . .
 
+# Environtment Variable
+ENV DATABASE_URL=""
+ENV JWT_SECRET=""
+ENV SENDER_MAIL=""
+ENV EMAIL_PASS=""
+
+# set port
+EXPOSE 3636
 
 # Install the required packages
 RUN npm install
