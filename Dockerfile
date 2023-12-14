@@ -2,20 +2,21 @@
 FROM node:18-alpine
 
 # Set the working directory to /app
-WORKDIR /go-laundry
+WORKDIR /app
 
 # Copy the package.json and package-lock.json files to the container
-COPY package*.json ./
+# COPY package*.json ./
 
-USER node
+# Copy the rest of the application code to the container
+COPY . .
+
 
 # Install the required packages
 RUN npm install
 
 RUN npm run build
 
-# Copy the rest of the application code to the container
-COPY . .
+USER node
 
 # Specify the command to run when the container launches
 CMD ["npm", "run", "start:prod"]
