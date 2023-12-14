@@ -1,0 +1,58 @@
+# Ignore Node.js modules and npm logs
+node_modules
+npm-debug.log
+
+# Ignore user-specific files
+Dockerfile
+.dockerignore
+
+# Ignore development and test files
+.vscode
+test
+tests
+__tests__
+*.test.js
+*.spec.js
+*.test.ts
+*.spec.ts
+
+# Ignore version control files
+.git
+.gitignore
+.gitattributes
+
+# Ignore package manager lock files
+yarn.lock
+package-lock.json
+
+# Ignore Docker related files when not needed
+.dockerignore
+docker-compose.yml
+.docker
+
+# Ignore editor-specific files
+.idea
+.vscode
+
+# Ignore build artifacts and output
+build
+dist
+
+# Ignore configuration files that may contain sensitive information
+.env
+*.env
+.env.local
+.env.*.local
+
+# Ignore logs and temporary files
+logs
+*.log
+*.log.*
+*.pid
+*.seed
+*.pid.lock
+*.seed.lock
+
+# Ignore operating system files
+.DS_Store
+Thumbs.db
